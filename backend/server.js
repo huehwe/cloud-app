@@ -17,7 +17,7 @@ const __dirname = path.resolve();
 // Middleware
 app.use(cors({
 	origin: process.env.NODE_ENV === 'production'
-		? process.env.FRONTEND_URL
+		? ['https://cloud-backend-cda8c7gbercxa6hh.southeastasia-01.azurewebsites.net', process.env.FRONTEND_URL]
 		: 'http://localhost:3000',
 	credentials: true
 }));
