@@ -1,0 +1,22 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: UseNode@1
+    inputs:
+      version: '20.x'
+
+  - script: |
+      npm ci
+      npm ci --prefix frontend
+      npm ci --prefix backend
+    displayName: 'Install Dependencies'
+
+  - script: npm run build --prefix frontend
+    displayName: 'Build Frontend'
+
+  - script: npm start
+    displayName: 'Start Backend'
