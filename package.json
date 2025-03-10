@@ -1,12 +1,14 @@
 {
-	"name": "mern-crash-course",
+	"name": "cloud-app",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"dev": "cross-env NODE_ENV=development nodemon backend/server.js",
-		"build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
-		"start": "cross-env NODE_ENV=production node backend/server.js"
+		"install": "npm install && npm install --prefix frontend && npm install --prefix backend",
+		"build": "npm run build --prefix frontend",
+		"start": "cross-env NODE_ENV=production node backend/server.js",
+		"azure-postbuild": "npm run build",
+		"deploy": "npm run build && npm start"
 	},
 	"type": "module",
 	"keywords": [],
@@ -24,5 +26,9 @@
 	"devDependencies": {
 		"cross-env": "^7.0.3",
 		"nodemon": "^3.1.4"
+	},
+	"engines": {
+		"node": "20.x",
+		"npm": "10.x"
 	}
 }

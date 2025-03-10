@@ -1,5 +1,29 @@
+# Dependencies
 node_modules/
-.env
+**/node_modules/
+/.pnp
+.pnp.js
+
+# Build outputs
 dist/
+**/dist/
 build/
+**/build/
+
+# Package management
 package-lock.json
+**/package-lock.json
+yarn.lock
+.yarn-integrity
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Cache and logs
+.cache/
+.npm/
+logs/
+*.log
+npm-debug.log*
