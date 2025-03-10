@@ -15,8 +15,9 @@ steps:
       npm ci --prefix backend
     displayName: 'Install Dependencies'
 
-  - script: npm run build --prefix frontend
+  - script: npx vite build --prefix frontend
     displayName: 'Build Frontend'
+
 
   - script: npm start
     displayName: 'Start Backend'
