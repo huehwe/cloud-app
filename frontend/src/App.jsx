@@ -11,10 +11,6 @@ import CartPage from "./pages/CartPage";
 import OrderConfirmation from "./pages/OrderConfirmation";
 import OrdersPage from "./pages/OrdersPage";
 
-
-
-
-
 function App() {
 	return (
 		<Box minH={"100vh"} bg={useColorModeValue("gray.100", "gray.900")}>

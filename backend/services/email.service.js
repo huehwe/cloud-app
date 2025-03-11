@@ -42,6 +42,7 @@ export const sendVerificationEmail = async (email, otp) => {
 
 export const sendOTP = async (email, otp) => {
     try {
+        ư
         console.log('Sending OTP to:', email);
         const info = await sendEmail(email, 'Your OTP Code', generateOTPTemplate(otp));
         console.log('OTP email sent: %s', info.messageId);
