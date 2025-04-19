@@ -25,6 +25,9 @@ jobs:
 
       - name: Install and Build
         run: |
+          # Increase memory limit for Node.js
+          export NODE_OPTIONS="--max-old-space-size=4096"
+          
           # Install dependencies
           npm install
           cd frontend
@@ -39,10 +42,10 @@ jobs:
           rm -rf node_modules
           rm -rf frontend/node_modules
           rm -rf .git
-          rm -rf frontend/.vite
           rm -rf frontend/src
           rm -f .env*
           find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
+          find . -name "*.log" -type f -delete
 
 
       - name: Zip artifact for deployment
