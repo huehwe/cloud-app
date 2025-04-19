@@ -1,5 +1,4 @@
 import express from "express";
-import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
 import orderRoutes from './routes/order.route.js';
@@ -8,7 +7,9 @@ import productRoutes from "./routes/product.route.js";
 import authRoutes from "./routes/auth.route.js";
 import emailRoutes from './routes/email.route.js';
 
-dotenv.config();
+import dotenv from "dotenv";
+dotenv.config({ path: "./backend/.env" }); // Chỉ định đường dẫn file .env
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
