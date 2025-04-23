@@ -1,15 +1,21 @@
 import express from "express";
 import path from "path";
 import cors from "cors";
-import orderRoutes from './routes/order.route.js';
+import dotenv from "dotenv";
 import { connectDB } from "./config/database.js";  // Import hàm kết nối DB
+
+// Import routes
 import productRoutes from "./routes/product.route.js";
 import authRoutes from "./routes/auth.route.js";
 import emailRoutes from './routes/email.route.js';
+import orderRoutes from './routes/order.route.js';
+import userRoutes from './routes/user.route.js'; // Import User routes
+import categoryRoutes from './routes/category.route.js'; // Import Category routes
+import orderItemRoutes from './routes/OrderItem.route.js'; // Import OrderItem routes
+import paymentRoutes from './routes/payment.route.js';
+import reviewRoutes from './routes/review.route.js';
 
-import dotenv from "dotenv";
 dotenv.config({ path: "./backend/.env" }); // Chỉ định đường dẫn file .env
-
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -37,6 +43,11 @@ app.use("/api/products", productRoutes);  // Route cho sản phẩm
 app.use("/api/auth", authRoutes);          // Route cho xác thực
 app.use("/api/orders", orderRoutes);      // Route cho đơn hàng
 app.use("/api/email", emailRoutes);       // Route cho email
+app.use('/api/users', userRoutes);        // Route cho User
+app.use('/api/categories', categoryRoutes); // Route cho Category
+app.use('/api/order-items', orderItemRoutes); // Route cho OrderItem
+app.use('/api/payments', paymentRoutes);  // Route cho Payment
+app.use('/api/reviews', reviewRoutes);    // Route cho Review
 
 // Serve static files in production (Phục vụ các file tĩnh nếu trong môi trường production)
 if (process.env.NODE_ENV === "production") {
@@ -58,5 +69,16 @@ const startServer = async () => {
     process.exit(1);  // Dừng server nếu kết nối DB thất bại
   }
 };
+
+import sequelize from './config/database.js';
+import './models/User.js';
+import './models/Category.js';
+import './models/Product.js';
+import './models/Order.js';
+// Import các model khác...
+
+sequelize.sync({ alter: true })
+  .then(() => console.log('All models were synchronized successfully.'))
+  .catch((err) => console.error('Error synchronizing models:', err));
 
 startServer();  // Gọi hàm khởi động server

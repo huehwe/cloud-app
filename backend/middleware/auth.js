@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/user.model.js';
+import User from '../models/User.js'; // Sequelize model
 
 export const protect = async (req, res, next) => {
     try {
@@ -16,14 +16,14 @@ export const protect = async (req, res, next) => {
         // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Get user from token
-        const user = await User.findById(decoded.id);
+        // Get user from token using Sequelize
+        const user = await User.findByPk(decoded.id); // Sequelize method to find by primary key
 
         if (!user) {
             return res.status(401).json({ message: 'User not found' });
         }
 
-        req.user = user;
+        req.user = user; // Attach user to request object
         next();
     } catch (error) {
         console.error('Auth middleware error:', error);

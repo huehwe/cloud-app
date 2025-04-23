@@ -1,5 +1,5 @@
 import { sendVerificationEmail, sendOTP } from '../services/email.service.js';
-import User from '../models/user.model.js';
+import User from '../models/User.js';
 
 export const sendVerificationCode = async (req, res) => {
     try {

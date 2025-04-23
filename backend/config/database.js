@@ -10,7 +10,7 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
   port: process.env.DB_PORT || 1433,
   dialectOptions: {
     options: {
-      encrypt: true,
+      encrypt: process.env.DB_ENCRYPT === "true",
       enableArithAbort: true,
     },
   },
@@ -26,12 +26,5 @@ export const connectDB = async () => {
     console.error('Database connection error:', error);
   }
 };
-
-// Debug biến môi trường
-console.log('DB_HOST:', process.env.DB_HOST);
-console.log('DB_USER:', process.env.DB_USER);
-console.log('DB_PASS:', process.env.DB_PASS);
-console.log('DB_NAME:', process.env.DB_NAME);
-console.log('DB_PORT:', process.env.DB_PORT);
 
 export default sequelize;

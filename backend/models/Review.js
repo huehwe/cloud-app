@@ -1,36 +1,38 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js';
 
-const Product = sequelize.define('Product', {
+const Review = sequelize.define('Review', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  name: {
-    type: DataTypes.STRING(200),
-    allowNull: false,
-  },
-  description: {
-    type: DataTypes.TEXT,
-  },
-  price: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: false,
-  },
-  stock: {
+  user_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
-  },
-  category_id: {
-    type: DataTypes.INTEGER,
     references: {
-      model: 'Categories',
+      model: 'Users',
       key: 'id',
     },
   },
-  image_url: {
-    type: DataTypes.STRING(255),
+  product_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Products',
+      key: 'id',
+    },
+  },
+  rating: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      min: 1,
+      max: 5,
+    },
+  },
+  comment: {
+    type: DataTypes.TEXT,
   },
   created_at: {
     type: DataTypes.DATE,
@@ -38,4 +40,4 @@ const Product = sequelize.define('Product', {
   },
 });
 
-export default Product;
+export default Review;
