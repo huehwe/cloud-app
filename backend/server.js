@@ -59,4 +59,16 @@ const startServer = async () => {
   }
 };
 
+// Thêm một dòng vào bảng Users
+    const result = await pool
+      .request()
+      .input("name", sql.NVarChar(100), "Test User")
+      .input("email", sql.NVarChar(100), "testuser@example.com")
+      .input("password_hash", sql.NVarChar(sql.MAX), "hashed_password")
+      .input("role", sql.VarChar(20), "customer")
+      .query(`
+        INSERT INTO Users (name, email, password_hash, role)
+        VALUES (@name, @email, @password_hash, @role)
+      `);
+
 startServer();  // Gọi hàm khởi động server
