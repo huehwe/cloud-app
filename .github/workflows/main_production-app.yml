@@ -29,22 +29,8 @@ jobs:
           npm run build --if-present
           npm run test --if-present
 
-      - name: Build frontend
-        run: |
-          cd frontend
-          npm install
-          npm run build
-          cd ..
-
       - name: Zip artifact for deployment
-        run: |
-          zip -r release.zip . \
-          -x "**/node_modules/**" \
-          -x "**/.git/**" \
-          -x "**/.env*" \
-          -x "**/logs/**" \
-          -x "**/*.log"
-  
+        run: zip release.zip ./* -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -74,14 +60,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_B9C0A008EEA245DC9663665E27089902 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_9EB531CEEEAE4A44804B69EFCC25A801 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_206B4B71A6084877BC2E8944E52D19B9 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E9C4854E649E4770AE4A4D25EBAED5DF }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_655628D920614256A361DEBF6DE149A3 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_79614E5644CC476D8381A7087DAB633B }}
 
-      - name: Deploy to Azure Web App
+      - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'production-app'
-          package: release.zip
+          slot-name: 'Production'
+          package: .
           
