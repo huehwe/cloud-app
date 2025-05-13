@@ -1,48 +1,37 @@
-import Order from '../models/order.model.js';
+import Order from '../models/Order.js';
+import OrderItem from '../models/OrderItem.js';
 
-export const createOrder = async (req, res) => {
-    try {
-        const { items, totalAmount } = req.body;
+const createOrder = async (req, res) => {
+  try {
+    const { user_id, items, total_price } = req.body;
+    const order = await Order.create({ user_id, status: 'pending', total_price });
 
-        const order = await Order.create({
-            user: req.user._id,
-            items: items.map(item => ({
-                product: item._id,
-                quantity: item.quantity,
-                price: item.price
-            })),
-            totalAmount
-        });
-
-        res.status(201).json({
-            success: true,
-            data: order
-        });
-    } catch (error) {
-        console.error('Create order error:', error);
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+    for (const item of items) {
+      await OrderItem.create({
+        order_id: order.id,
+        product_id: item.product_id,
+        quantity: item.quantity,
+        price: item.price,
+      });
     }
+
+    res.status(201).json({ message: 'Order created', orderId: order.id });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
-
-export const getMyOrders = async (req, res) => {
-    try {
-        const orders = await Order.find({ user: req.user._id })
-            .populate('items.product')
-            .sort('-createdAt');
-
-        res.json({
-            success: true,
-            data: orders
-        });
-    } catch (error) {
-        console.error('Get orders error:', error);
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
+const getOrdersByUser = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+    const orders = await Order.findAll({
+      where: { user_id },
+      include: [OrderItem],
+    });
+    res.status(200).json(orders);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
+
+export default { createOrder, getOrdersByUser };

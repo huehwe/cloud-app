@@ -1,106 +1,28 @@
-import { sendVerificationEmail, sendOTP } from '../services/email.service.js';
-import User from '../models/user.model.js';
+import nodemailer from 'nodemailer';
 
-export const sendVerificationCode = async (req, res) => {
-    try {
-        const { email } = req.body;
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
-        // Find user by email
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: 'User not found'
-            });
-        }
+const sendEmail = async (req, res) => {
+  try {
+    const { to, subject, text } = req.body;
 
-        // Generate new OTP
-        const otp = user.generateOTP();
-        await user.save();
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to,
+      subject,
+      text,
+    });
 
-        // Send verification email
-        await sendVerificationEmail(email, otp);
-
-        res.status(200).json({
-            success: true,
-            message: 'Verification code sent successfully'
-        });
-
-    } catch (error) {
-        console.error('Send verification code error:', error);
-        res.status(500).json({
-            success: false,
-            message: error.message || 'Error sending verification code'
-        });
-    }
+    res.status(200).json({ message: 'Email sent successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
-export const verifyCode = async (req, res) => {
-    try {
-        const { email, otp } = req.body;
-
-        const user = await User.findOne({
-            email,
-            otp,
-            otpExpiry: { $gt: Date.now() }
-        });
-
-        if (!user) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid or expired verification code'
-            });
-        }
-
-        // Mark email as verified
-        user.isEmailVerified = true;
-        user.otp = undefined;
-        user.otpExpiry = undefined;
-        await user.save();
-
-        res.status(200).json({
-            success: true,
-            message: 'Email verified successfully'
-        });
-
-    } catch (error) {
-        console.error('Verify code error:', error);
-        res.status(500).json({
-            success: false,
-            message: error.message || 'Error verifying code'
-        });
-    }
-};
-
-export const resendVerificationCode = async (req, res) => {
-    try {
-        const { email } = req.body;
-
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: 'User not found'
-            });
-        }
-
-        // Generate new OTP
-        const otp = user.generateOTP();
-        await user.save();
-
-        // Send new OTP
-        await sendOTP(email, otp);
-
-        res.status(200).json({
-            success: true,
-            message: 'New verification code sent successfully'
-        });
-
-    } catch (error) {
-        console.error('Resend verification code error:', error);
-        res.status(500).json({
-            success: false,
-            message: error.message || 'Error resending verification code'
-        });
-    }
-};
+export default { sendEmail };

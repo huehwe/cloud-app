@@ -1,44 +1,45 @@
 import express from "express";
 import path from "path";
 import cors from "cors";
-import orderRoutes from './routes/order.route.js';
-import { connectDB } from "./config/database.js";  // Import hàm kết nối DB
+import dotenv from "dotenv";
+import { connectDB } from "./config/database.js";
+
+// Import routes
 import productRoutes from "./routes/product.route.js";
 import authRoutes from "./routes/auth.route.js";
-import emailRoutes from './routes/email.route.js';
+import orderRoutes from "./routes/order.route.js";
+import emailRoutes from "./routes/email.route.js";
+import categoryRoutes from "./routes/category.route.js";
+import cartRoutes from "./routes/cart.route.js";
+import orderItemRoutes from "./routes/orderItem.route.js";
+import paymentRoutes from "./routes/payment.route.js";
 
-import dotenv from "dotenv";
-dotenv.config({ path: "./backend/.env" }); // Chỉ định đường dẫn file .env
-
+dotenv.config({ path: "./backend/.env" });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
 
-// Middleware CORS
+// Middlewares
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
-    ? process.env.FRONTEND_URL  // Địa chỉ frontend trong môi trường production
-    : 'http://localhost:3000',  // Địa chỉ localhost trong môi trường phát triển
+    ? process.env.FRONTEND_URL
+    : 'http://localhost:3000',
   credentials: true
 }));
-
-// Middleware để xử lý dữ liệu JSON
 app.use(express.json());
 
-// Error handling middleware (Xử lý lỗi chung)
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
-});
-
 // Routes
-app.use("/api/products", productRoutes);  // Route cho sản phẩm
-app.use("/api/auth", authRoutes);          // Route cho xác thực
-app.use("/api/orders", orderRoutes);      // Route cho đơn hàng
-app.use("/api/email", emailRoutes);       // Route cho email
+app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/email", emailRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/order-items", orderItemRoutes);
+app.use("/api/payments", paymentRoutes);
 
-// Serve static files in production (Phục vụ các file tĩnh nếu trong môi trường production)
+// Serve frontend static files (for production)
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));
   app.get("*", (req, res) => {
@@ -46,29 +47,23 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// Khởi động server và kết nối cơ sở dữ liệu
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Something went wrong!" });
+});
+
+// Start server
 const startServer = async () => {
   try {
-    await connectDB();  // Kết nối đến DB
+    await connectDB();
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error('Failed to start server:', error);
-    process.exit(1);  // Dừng server nếu kết nối DB thất bại
+    console.error("Failed to start server:", error);
+    process.exit(1);
   }
 };
 
-// Thêm một dòng vào bảng Users
-    const result = await pool
-      .request()
-      .input("name", sql.NVarChar(100), "Test User")
-      .input("email", sql.NVarChar(100), "testuser@example.com")
-      .input("password_hash", sql.NVarChar(sql.MAX), "hashed_password")
-      .input("role", sql.VarChar(20), "customer")
-      .query(`
-        INSERT INTO Users (name, email, password_hash, role)
-        VALUES (@name, @email, @password_hash, @role)
-      `);
-
-startServer();  // Gọi hàm khởi động server
+startServer();

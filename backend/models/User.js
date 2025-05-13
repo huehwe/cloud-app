@@ -1,41 +1,46 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js'; // Import kết nối Sequelize
+import sequelize from '../config/database.js';
 
 const User = sequelize.define('User', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    autoIncrement: true, // Identity
+    autoIncrement: true,
   },
   name: {
-    type: DataTypes.NVARCHAR(100),
-    allowNull: false, // Không được để trống
+    type: DataTypes.STRING(100),
+    allowNull: false,
   },
   email: {
-    type: DataTypes.NVARCHAR(100),
+    type: DataTypes.STRING(100),
+    unique: true,
     allowNull: false,
-    unique: true, // Đảm bảo email là duy nhất
   },
-  password_hash: {
-    type: DataTypes.NVARCHAR(DataTypes.MAX), // Lưu mật khẩu đã mã hóa
+  password: { // Đổi từ password_hash → password để controller nhận đúng
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   role: {
     type: DataTypes.STRING(20),
     allowNull: false,
-    defaultValue: 'customer', // Giá trị mặc định
+    defaultValue: 'customer',
     validate: {
-      isIn: [['customer', 'admin', 'seller']], // Chỉ cho phép các giá trị này
+      isIn: [['customer', 'admin']],
     },
   },
-  created_at: {
+  isEmailVerified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  otpCode: { // Đổi từ otp → otpCode cho đúng với controller
+    type: DataTypes.STRING,
+  },
+  otpExpiry: {
     type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: DataTypes.NOW, // Ngày tạo mặc định là ngày hiện tại
   },
 }, {
-  tableName: 'Users', // Tên bảng trong cơ sở dữ liệu
-  timestamps: false, // Không sử dụng các cột createdAt và updatedAt mặc định
+  timestamps: true, // Tự động thêm createdAt và updatedAt
+  tableName: 'users', // Nếu bạn muốn tên bảng là 'users'
 });
 
 export default User;
