@@ -2,7 +2,8 @@ import express from "express";
 import path from "path";
 import cors from "cors";
 import dotenv from "dotenv";
-import { connectDB } from "./config/database.js";
+// import { connectDB } from "./config/database.js"; // Sẽ dùng db.sequelize.authenticate()
+import db from './models/index.js'; // Import đối tượng db từ models/index.js
 
 // Import routes
 import productRoutes from "./routes/product.route.js";
@@ -56,24 +57,21 @@ app.use((err, req, res, next) => {
 // Start server
 const startServer = async () => {
   try {
-    await connectDB();
+    await db.sequelize.authenticate(); // Xác thực kết nối qua instance từ models/index.js
+    console.log('Database connection authenticated.');
+
+    // Đồng bộ hóa model với cơ sở dữ liệu
+    await db.sequelize.sync({ alter: true }); // Sử dụng instance sequelize từ db
+    console.log('Database synced successfully.');
+
+    // Chỉ bắt đầu lắng nghe sau khi kết nối và đồng bộ DB thành công
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error("Failed to start server:", error);
+    console.error("Failed to start server, connect to DB, or sync database:", error);
     process.exit(1);
   }
 };
 
 startServer();
-
-import sequelize from './config/database.js';
-
-sequelize.sync({ alter: true }) 
-  .then(() => {
-    console.log('Database synced');
-  })
-  .catch((err) => {
-    console.error('Failed to sync database:', err);
-  });

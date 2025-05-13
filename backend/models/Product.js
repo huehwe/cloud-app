@@ -25,16 +25,12 @@ const Product = sequelize.define('Product', {
   category_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'Categories',
+      model: 'categories', // Sửa 'Categories' thành 'categories' để khớp với tableName trong Category.js
       key: 'id',
     },
   },
   image_url: {
     type: DataTypes.STRING(255),
-  },
-  created_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
   },
 });
 

@@ -12,9 +12,12 @@ const Category = sequelize.define('Category', {
     allowNull: false,
     unique: true,
     validate: {
-      notEmpty: true,
+      notEmpty: {
+        msg: "Category name cannot be empty" // Thêm thông báo lỗi tùy chỉnh
+      },
     },
   },
+  // Sequelize sẽ tự động quản lý createdAt và updatedAt
 }, {
   timestamps: true,
   tableName: 'categories',
