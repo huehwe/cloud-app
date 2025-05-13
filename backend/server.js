@@ -67,3 +67,13 @@ const startServer = async () => {
 };
 
 startServer();
+
+import sequelize from './config/database.js';
+
+sequelize.sync({ alter: true }) 
+  .then(() => {
+    console.log('Database synced');
+  })
+  .catch((err) => {
+    console.error('Failed to sync database:', err);
+  });

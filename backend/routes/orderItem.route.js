@@ -8,3 +8,4 @@ router.get('/', protect, authorizeRoles('admin'), orderItemController.getAllOrde
 router.get('/:id', protect, authorizeRoles('admin'), orderItemController.getOrderItemById);
 
 export default router;
+

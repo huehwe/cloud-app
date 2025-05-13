@@ -17,8 +17,8 @@ const createPayment = async (req, res) => {
 
 const getPaymentByOrder = async (req, res) => {
   try {
-    const { order_id } = req.params;
-    const payment = await Payment.findOne({ where: { order_id } });
+    const { orderId } = req.params; // Sử dụng orderId từ route params
+    const payment = await Payment.findOne({ where: { order_id: orderId } }); // Query DB bằng cột order_id
     if (!payment) {
       return res.status(404).json({ message: 'Payment not found' });
     }

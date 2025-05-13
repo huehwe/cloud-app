@@ -1,7 +1,7 @@
 import Product from '../models/Product.js';
 import Category from '../models/Category.js';
 
-const getAllProducts = async (req, res) => {
+export const getProducts = async (req, res) => {
   try {
     const products = await Product.findAll({ include: [Category] });
     res.status(200).json(products);
@@ -10,7 +10,7 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-const createProduct = async (req, res) => {
+export const createProduct = async (req, res) => {
   try {
     const { name, description, price, stock, category_id, image_url } = req.body;
     const product = await Product.create({ name, description, price, stock, category_id, image_url });
@@ -20,7 +20,7 @@ const createProduct = async (req, res) => {
   }
 };
 
-const getProductById = async (req, res) => {
+export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
     const product = await Product.findByPk(id, { include: [Category] });
@@ -31,7 +31,7 @@ const getProductById = async (req, res) => {
   }
 };
 
-const updateProduct = async (req, res) => {
+export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
     await Product.update(req.body, { where: { id } });
@@ -41,7 +41,7 @@ const updateProduct = async (req, res) => {
   }
 };
 
-const deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
     await Product.destroy({ where: { id } });
@@ -50,5 +50,3 @@ const deleteProduct = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
-export default { getAllProducts, createProduct, getProductById, updateProduct, deleteProduct };

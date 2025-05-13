@@ -1,7 +1,7 @@
 import Order from '../models/Order.js';
 import OrderItem from '../models/OrderItem.js';
 
-const createOrder = async (req, res) => {
+export const createOrder = async (req, res) => {
   try {
     const { user_id, items, total_price } = req.body;
     const order = await Order.create({ user_id, status: 'pending', total_price });

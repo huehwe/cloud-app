@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import User from '../models/User.js'; // Sequelize model
 
 export const protect = async (req, res, next) => {
@@ -36,4 +37,15 @@ export const requireVerifiedEmail = async (req, res, next) => {
         return res.status(403).json({ message: 'Please verify your email first' });
     }
     next();
+};
+
+export const authorizeRoles = (...roles) => {
+    return (req, res, next) => {
+        if (!req.user || !roles.includes(req.user.role)) {
+            return res.status(403).json({
+                message: `User role ${req.user ? req.user.role : 'unknown'} is not authorized to access this route`
+            });
+        }
+        next();
+    };
 };

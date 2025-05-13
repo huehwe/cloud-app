@@ -3,12 +3,16 @@ import Product from '../models/Product.js';
 
 const getCartByUser = async (req, res) => {
   try {
-    const { user_id } = req.params;
+    // user_id should come from the authenticated user (set by 'protect' middleware)
+    const user_id = req.user.id; 
+    if (!user_id) {
+      return res.status(400).json({ message: "User ID not found in request. Ensure user is authenticated." });
+    }
     const cartItems = await Cart.findAll({
       where: { user_id },
       include: [Product],
     });
-    res.status(200).json(cartItems);
+    return res.status(200).json(cartItems);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
