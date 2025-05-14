@@ -20,7 +20,7 @@ const Category = sequelize.define('Category', {
   // Sequelize sẽ tự động quản lý createdAt và updatedAt
 }, {
   timestamps: true,
-  tableName: 'categories',
+  tableName: 'Categories',
 });
 
 export default Category;

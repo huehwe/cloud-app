@@ -40,7 +40,7 @@ const User = sequelize.define('User', {
   },
 }, {
   timestamps: true, // Tự động thêm createdAt và updatedAt
-  tableName: 'users', // Nếu bạn muốn tên bảng là 'users'
+  tableName: 'Users', // Nếu bạn muốn tên bảng là 'users'
   indexes: [
     {
       unique: true,
