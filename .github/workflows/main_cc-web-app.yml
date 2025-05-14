@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - cc-web-app
+name: Build and deploy Node.js app to Azure Web App - production-app
 
 on:
   push:
@@ -23,40 +23,15 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Install and Build
+      - name: Install dependencies and build
         run: |
-          # Install dependencies
           npm install
-          cd frontend
-          npm install
-          
-          # Build frontend
+          npm install --prefix frontend
           npm run build
-          cd ..
-
-      - name: Clean unnecessary files
-        run: |
-          rm -rf node_modules
-          rm -rf frontend/node_modules
-          rm -rf .git
-          rm -rf frontend/.vite
-          rm -rf frontend/src
-          rm -f .env*
-          find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
-
 
       - name: Zip artifact for deployment
-        run: |
-          zip -r release.zip . \
-          -x "*/node_modules/*" \
-          -x ".git/*" \
-          -x ".env*" \
-          -x "*.log" \
-          -x "frontend/src/*" \
-          -x "frontend/.vite/*" \
-          -x "*.md" \
-          -x "release.zip"
-        
+        run: zip -r release.zip . -x "**/node_modules/**" "**/frontend/node_modules/**" "**/.git/**" "**/.env*"
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -85,15 +60,14 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_965D7E6D410E460C9FD7914A6DB51FF9 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2B32743DDFED4D24B705176FA6DDFB7D }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_62A40FEAD4F8458D8F619DD9670D4576 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E9C4854E649E4770AE4A4D25EBAED5DF }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_655628D920614256A361DEBF6DE149A3 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_79614E5644CC476D8381A7087DAB633B }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'cc-web-app'
+          app-name: 'production-app'
           slot-name: 'Production'
           package: .
-          
