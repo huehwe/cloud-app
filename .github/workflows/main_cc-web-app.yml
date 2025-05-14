@@ -30,7 +30,7 @@ jobs:
           npm run build
 
       - name: Zip artifact for deployment
-        run: zip -r release.zip . -x "**/node_modules/**" "**/frontend/node_modules/**" "**/.git/**" "**/.env*"
+        run: zip -r release.zip . -x "**/node_modules/**" "**/.git/**" "**/.env*"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
