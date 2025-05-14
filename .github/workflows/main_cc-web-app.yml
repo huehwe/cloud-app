@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - production-app
+name: Build and deploy Node.js app to Azure Web App - cc-web-app
 
 on:
   push:
@@ -23,15 +23,40 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Install dependencies and build
+      - name: Install and Build
         run: |
+          # Install dependencies
           npm install
-          npm install --prefix frontend
+          cd frontend
+          npm install
+          
+          # Build frontend
           npm run build
+          cd ..
+
+      - name: Clean unnecessary files
+        run: |
+          rm -rf node_modules
+          rm -rf frontend/node_modules
+          rm -rf .git
+          rm -rf frontend/.vite
+          rm -rf frontend/src
+          rm -f .env*
+          find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
+
 
       - name: Zip artifact for deployment
-        run: zip -r release.zip . -x "**/node_modules/**" "**/.git/**" "**/.env*"
-
+        run: |
+          zip -r release.zip . \
+          -x "*/node_modules/*" \
+          -x ".git/*" \
+          -x ".env*" \
+          -x "*.log" \
+          -x "frontend/src/*" \
+          -x "frontend/.vite/*" \
+          -x "*.md" \
+          -x "release.zip"
+        
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -71,3 +96,4 @@ jobs:
           app-name: 'production-app'
           slot-name: 'Production'
           package: .
+          
