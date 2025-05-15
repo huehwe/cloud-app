@@ -96,5 +96,5 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'production-app'
-          slot-name: 'Production'
+          slot-name: 'staging'
           package: .
