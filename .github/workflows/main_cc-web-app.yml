@@ -36,23 +36,26 @@ jobs:
 
       - name: Clean unnecessary files
         run: |
-          # Install production-only backend dependencies into a separate folder
-          mkdir ./backend-production
-          npm install --production --prefix ./backend-production
-          
-          # Build frontend
-          npm run build --prefix frontend
-          
-          # Clean up files not needed for production:
-          rm -rf node_modules
           rm -rf frontend/node_modules
-          rm -rf .git          
-          rm -f .env*          
-          rm -rf backend-production/cache/
-          
-      - name: Zip artifact for deployment
-        run: zip -r release.zip . -x "node_modules/*" "frontend/node_modules/*" ".git/*" ".env*" "*.log" "frontend/src/*" "frontend/.vite/*" "*.md" "release.zip"        
+          rm -rf .git
+          rm -rf frontend/.vite
+          rm -rf frontend/src
+          rm -f .env*
 
+
+
+      - name: Zip artifact for deployment
+        run: |
+          zip -r release.zip . \
+          -x "*/node_modules/*" \
+          -x ".git/*" \
+          -x ".env*" \
+          -x "*.log" \
+          -x "frontend/src/*" \
+          -x "frontend/.vite/*" \
+          -x "*.md" \
+          -x "release.zip"
+        
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -66,8 +69,8 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
       - name: Download artifact from build job
@@ -77,7 +80,10 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
-      
+
+      - name: Install server dependencies
+        run: npm install
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -92,4 +98,3 @@ jobs:
           app-name: 'production-app'
           slot-name: 'Production'
           package: .
-          
