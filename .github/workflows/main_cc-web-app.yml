@@ -35,28 +35,23 @@ jobs:
           cd ..
 
       - name: Clean unnecessary files
-        run: |
+        run: |          
+          # Install production-only backend dependencies into a separate folder
+          npm install --production --prefix ./backend-production
+          
+          # Build frontend
+          npm run build --prefix frontend
+          
+          # Clean up files not needed for production:
           rm -rf node_modules
           rm -rf frontend/node_modules
-          rm -rf .git
-          rm -rf frontend/.vite
-          rm -rf frontend/src
-          rm -f .env*
-          find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
-
-
+          rm -rf .git          
+          rm -f .env*          
+          rm -rf backend-production/cache/
+          
       - name: Zip artifact for deployment
-        run: |
-          zip -r release.zip . \
-          -x "*/node_modules/*" \
-          -x ".git/*" \
-          -x ".env*" \
-          -x "*.log" \
-          -x "frontend/src/*" \
-          -x "frontend/.vite/*" \
-          -x "*.md" \
-          -x "release.zip"
-        
+        run: zip -r release.zip . -x "node_modules/*" "frontend/node_modules/*" ".git/*" ".env*" "*.log" "frontend/src/*" "frontend/.vite/*" "*.md" "release.zip"        
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
