@@ -35,8 +35,9 @@ jobs:
           cd ..
 
       - name: Clean unnecessary files
-        run: |          
+        run: |
           # Install production-only backend dependencies into a separate folder
+          mkdir ./backend-production
           npm install --production --prefix ./backend-production
           
           # Build frontend
