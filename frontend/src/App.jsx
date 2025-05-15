@@ -13,7 +13,7 @@ import OrdersPage from "./pages/OrdersPage";
 
 function App() {
 	return (
-		<Box minH={"100vh"} bg={useColorModeValue("gray.100", "gray.900")}>
+		<Box minH={"100vh"} bg={useColorModeValue("blue.100", "blue.900")}>
 			<Navbar />
 			<Routes>
 				<Route path="/login" element={<LoginPage />} />
