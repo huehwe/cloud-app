@@ -95,5 +95,5 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'cloud-app'
+          app-name: 'cloud-app-is402'
           package: .
