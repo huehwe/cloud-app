@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy Node.js app to Azure Web App - cc-web-app
 
 on:
@@ -39,6 +42,8 @@ jobs:
           rm -rf frontend/src
           rm -f .env*
 
+
+
       - name: Zip artifact for deployment
         run: |
           zip -r release.zip . \
@@ -79,17 +84,12 @@ jobs:
       - name: Install server dependencies
         run: npm install
 
-      - name: Douwgrade Az.Accounts workaround
-        uses: Azure/powershell@v2
-        with:
-          azPSVersion: latest
-          inlineScript: |
-            Install-Module -Name Az.Accounts -RequiredVersion 2.19.0 -Force
-
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E9C4854E649E4770AE4A4D25EBAED5DF }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_655628D920614256A361DEBF6DE149A3 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_79614E5644CC476D8381A7087DAB633B }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
