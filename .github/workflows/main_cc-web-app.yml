@@ -79,6 +79,13 @@ jobs:
       - name: Install server dependencies
         run: npm install
 
+      - name: Douwgrade Az.Accounts workaround
+        uses: Azure/powershell@v2
+        with:
+          azPSVersion: latest
+          inlineScript: |
+            Install-Module -Name Az.Accounts -RequiredVersion 2.19.0 -Force
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
